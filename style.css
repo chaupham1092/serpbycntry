@@ -1,0 +1,116 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Dropdown styling */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+#dropdownButton {
+    padding: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background: #fff;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dropdown-item img {
+    margin-right: 8px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Input field */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Search button */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Results */
+#results {
+    margin-top: 20px;
+}
+
+#results div {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#results h3 {
+    margin: 0;
+}
+
+#results a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#results a:hover {
+    text-decoration: underline;
+}
