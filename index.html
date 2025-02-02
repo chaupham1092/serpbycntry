@@ -7,7 +7,6 @@
     <title>Google Search by Location</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- GTM Code (directly added in the head) -->
     <script>
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
@@ -21,7 +20,6 @@
         })(window, document, 'script', 'dataLayer', 'GTM-WQRFGVWK');
     </script>
 
-    <!-- <noscript> tag for users without JavaScript -->
     <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WQRFGVWK" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
@@ -61,9 +59,9 @@
         <label for="query">Search Query:</label>
         <input type="text" id="query" placeholder="Enter search term.">
         <p><em>Please wait about <b>3-5 seconds</b> after hitting Search. </em></p>
-        <p><em>The API limitation only allow us to give you the first page result</em></p>
+        <p><em>The API limitation only allows us to give you the first page result</em></p>
 
-        <button id="searchBtn">Search</button>
+        <button id="searchBtn" disabled>Search</button> <!-- Initially disabled -->
 
         <!-- Spinner for loading state -->
         <div class="spinner" id="loadingSpinner"></div>
@@ -72,35 +70,87 @@
     </div>
 
     <script>
-        // Load API key from external config.json hosted on Netlify
-        fetch("https://serpbycntry.netlify.app/config.json") // Replace with your actual Netlify URL
+        let apiKey = '';  // Initialize an empty variable for the API key
+
+        // Load API key from GitHub raw link (secret JSON)
+        fetch('https://raw.githubusercontent.com/chaupham1092/serpbycntrypiakey/refs/heads/main/config.json?token=GHSAT0AAAAAAC56CEZUZNUXA5XITF4RVRFOZ467ADQ')
             .then(response => response.json())
             .then(config => {
-                const apiKey = config.API_KEY; // Store API key from config.json
-                
-                // Function to search results
+                apiKey = config.API_KEY;  // Store API key from config.json
+                document.getElementById('searchBtn').disabled = false;  // Enable the search button
+            })
+            .catch(error => {
+                console.error("Error loading API key:", error);
+                alert("Failed to load API key. Please try again later.");
+            });
+
+        // Load countries from JSON and filter based on user input
+        fetch('countries.json')
+            .then(response => response.json())
+            .then(countries => {
+                const countrySearch = document.getElementById('countrySearch');
+                const countryInput = document.getElementById('country');
+                const resultsDiv = document.getElementById('results');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+
+                // Function to display country suggestions based on search input
+                function filterCountries() {
+                    const searchTerm = countrySearch.value.toLowerCase();
+                    const filteredCountries = countries.filter(country =>
+                        country.name.toLowerCase().includes(searchTerm)
+                    );
+
+                    resultsDiv.innerHTML = ''; // Clear previous results
+
+                    filteredCountries.forEach(country => {
+                        const item = document.createElement('div');
+                        item.classList.add('dropdown-item');
+                        item.innerHTML =
+                            `<img src="https://flagcdn.com/w40/${country.code.toLowerCase()}.png" width="20" height="15" style="margin-right: 8px;">
+                            ${country.name}`;
+
+                        // Handle country selection
+                        item.addEventListener('click', () => {
+                            countrySearch.value = country.name; // Set country name in input
+                            countryInput.value = country.code; // Store country code in hidden input
+                            resultsDiv.innerHTML = ''; // Clear suggestions
+                        });
+
+                        resultsDiv.appendChild(item);
+                    });
+                }
+
+                // Listen for input changes and filter countries
+                countrySearch.addEventListener('input', filterCountries);
+
+                // Search results function
                 function searchResults() {
-                    const country = document.getElementById("country").value;
+                    const country = countryInput.value;
                     const query = document.getElementById("query").value;
-                    
+
                     if (!query) {
                         alert("Please enter a search term.");
                         return;
                     }
 
+                    if (!apiKey) {
+                        alert("API Key is not available. Please wait.");
+                        return;
+                    }
+
                     // Show loading spinner
-                    document.getElementById("loadingSpinner").style.display = 'block';
-                    document.getElementById("results").innerHTML = '';  
+                    loadingSpinner.style.display = 'block';
+                    resultsDiv.innerHTML = '';  // Clear previous results
 
                     const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://serpapi.com/search?q=${query}&gl=${country}&api_key=${apiKey}`)}`;
 
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
-                            document.getElementById("loadingSpinner").style.display = 'none';
+                            loadingSpinner.style.display = 'none';  // Hide loading spinner after results
 
                             if (data.error) {
-                                document.getElementById("results").innerHTML = `Error: ${data.error}`;
+                                resultsDiv.innerHTML = `Error: ${data.error}`;
                                 return;
                             }
 
@@ -111,23 +161,22 @@
                                         `<h3><a href="${result.link}" target="_blank">${result.title}</a></h3>
                                         <p><a href="${result.link}" target="_blank">${result.link}</a></p>
                                         <p>${result.snippet}</p>`;
-                                    document.getElementById("results").appendChild(resultItem);
+                                    resultsDiv.appendChild(resultItem);
                                 });
                             } else {
-                                document.getElementById("results").innerHTML = 'No results found.';
+                                resultsDiv.innerHTML = 'No results found or error occurred.';
                             }
                         })
                         .catch(error => {
-                            document.getElementById("loadingSpinner").style.display = 'none';
+                            loadingSpinner.style.display = 'none';  // Hide spinner on error
                             console.error('Error fetching search results:', error);
                             document.getElementById("results").innerHTML = `Error: ${error.message}`;
                         });
                 }
 
-                // Attach search function to button
                 document.getElementById("searchBtn").addEventListener("click", searchResults);
             })
-            .catch(error => console.error("Error loading API key:", error));
+            .catch(error => console.error('Error loading country data:', error));
     </script>
 
 </body>
