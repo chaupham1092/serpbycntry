@@ -78,17 +78,19 @@
     <script>
         let apiKey = '';  // Initialize an empty variable for the API key
 
-        // Load API key from GitHub raw link (secret JSON)
+        // Load API key from Netlify function (secret API)
         fetch('/.netlify/functions/get-api-key')
             .then(response => response.json())
             .then(config => {
-                apiKey = config.API_KEY;  // Store API key from config.json
+                apiKey = config.API_KEY;  // Store API key returned from the function
                 document.getElementById('searchBtn').disabled = false;  // Enable the search button
             })
             .catch(error => {
                 console.error("Error loading API key:", error);
                 alert("Failed to load API key. Please try again later.");
             });
+
+        
 
         // Load countries from JSON and filter based on user input
         fetch('countries.json')
