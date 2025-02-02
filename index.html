@@ -79,7 +79,7 @@
         let apiKey = '';  // Initialize an empty variable for the API key
 
         // Load API key from GitHub raw link (secret JSON)
-        fetch('https://raw.githubusercontent.com/chaupham1092/serpbycntrypiakey/refs/heads/main/config.json?token=GHSAT0AAAAAAC56CEZUTZ4JDKOTU4RW7JQ6Z467PYA')
+        fetch('/.netlify/functions/get-api-key')
             .then(response => response.json())
             .then(config => {
                 apiKey = config.API_KEY;  // Store API key from config.json
