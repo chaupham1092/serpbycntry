@@ -79,7 +79,7 @@
         let apiKey = '';  // Initialize an empty variable for the API key
 
         // Load API key from GitHub raw link (secret JSON)
-        fetch('https://raw.githubusercontent.com/chaupham1092/serpbycntrypiakey/refs/heads/main/config.json?token=GHSAT0AAAAAAC56CEZUZNUXA5XITF4RVRFOZ467ADQ')
+        fetch('https://raw.githubusercontent.com/chaupham1092/serpbycntrypiakey/refs/heads/main/config.json?token=GHSAT0AAAAAAC56CEZUTZ4JDKOTU4RW7JQ6Z467PYA')
             .then(response => response.json())
             .then(config => {
                 apiKey = config.API_KEY;  // Store API key from config.json
@@ -136,6 +136,11 @@
 
                     if (!query) {
                         alert("Please enter a search term.");
+                        return;
+                    }
+
+                    if (!country) {
+                        alert("Please select a country.");
                         return;
                     }
 
